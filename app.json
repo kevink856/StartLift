@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "src",
-    "slug": "src",
+    "name": "StartLift",
+    "slug": "StartLift",
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
     ]
   },
-  "name": "src"
+  "name": "StartLift"
 }
