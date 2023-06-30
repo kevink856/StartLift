@@ -31,19 +31,34 @@ export default function LoginPage() {
       <TouchableOpacity
         style = {styles.clickableLogin}
         activeOpacity = {0.5}
+        onPress = {null}
       >
         <Text style = {styles.loginText}>
           Log in
         </Text>
       </TouchableOpacity>
       :
-      <View
-        style = {styles.unclickableLogin}
-      >
+      <View style = {styles.unclickableLogin} >
         <Text style = {styles.loginText}>
           Log in
         </Text>
       </View>}
+      <View style = {styles.divider}>
+        <View style = {styles.dividerLine} />
+        <Text style = {styles.dividerText}>
+          or
+        </Text>
+        <View style={styles.dividerLine} />
+      </View>
+      <View style = {styles.divider}>
+        <Text style = {styles.footerText} onPress = {() => {}}>
+          Sign Up
+        </Text>
+        <View style = {styles.footerDivider} />
+        <Text style = {styles.footerText} onPress = {() => {}}>
+          Forgot Password?
+        </Text>
+      </View>
       <StatusBar style = "auto" />
     </View>
   );
@@ -94,5 +109,31 @@ const styles = StyleSheet.create({
   loginText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'lightgrey',
+  },
+  dividerText: {
+    textAlign: 'center',
+    paddingHorizontal: 8,
+    color: "lightgrey",
+  },
+  footerText: {
+    fontSize: 13,
+    textAlign: 'center',
+    paddingHorizontal: 15,
+    color: "blue",
+  },
+  footerDivider: {
+    backgroundColor: "lightgrey",
+    width: 1,
+    height: 20,
   },
 });
