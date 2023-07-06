@@ -2,14 +2,25 @@ import { StatusBar } from "expo-status-bar";
 import { React, useState } from "react";
 import { StyleSheet, TouchableOpacity, Image, Text, TextInput, View } from "react-native";
 
-const logo = require("../data/images/logo.png");
+import Login from "./LoginHandler.js";
+import SignupPage from "./SignupPage.js";
+
+const logo = require("../../data/images/logo.png");
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
+  const [visiblePopup, setVisiblePopup] = useState(false);
+  const [loginResponse, setLoginResponse] = useState("");
+  const [signupResponse, setSignupResponse] = useState("");
 
   return (
     <View style = {styles.container}>
+      <SignupPage
+        visible = {visiblePopup}
+        setVisible = {setVisiblePopup}
+        setSignupResponse = {setSignupResponse}
+      />
       <Image style = {styles.logo} source = {logo} />
       <TextInput
         style = {styles.input}
@@ -27,11 +38,17 @@ export default function LoginPage() {
         placeholderTextColor = "#888"
         secureTextEntry = {true}
       />
+      <Text style = {styles.footerText}>
+        {loginResponse}
+      </Text>
+      <Text style = {styles.footerText}>
+        {signupResponse}
+      </Text>
       {(email && pass) ? 
       <TouchableOpacity
         style = {styles.clickableLogin}
         activeOpacity = {0.5}
-        onPress = {null}
+        onPress = {() => Login(email, pass, setLoginResponse)}
       >
         <Text style = {styles.loginText}>
           Log in
@@ -51,11 +68,11 @@ export default function LoginPage() {
         <View style={styles.dividerLine} />
       </View>
       <View style = {styles.divider}>
-        <Text style = {styles.footerText} onPress = {() => {}}>
+        <Text style = {styles.footerText} onPress = {() => setVisiblePopup(true)}>
           Sign Up
         </Text>
         <View style = {styles.footerDivider} />
-        <Text style = {styles.footerText} onPress = {() => {}}>
+        <Text style = {styles.footerText} onPress = {null}>
           Forgot Password?
         </Text>
       </View>
@@ -74,6 +91,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 200,
+    height: 150,
     margin: 40,
     resizeMode: "contain",
   },
