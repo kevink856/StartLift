@@ -1,27 +1,46 @@
 import { StatusBar } from "expo-status-bar";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, Image, Text, TextInput, View } from "react-native";
 
 import Login from "./LoginHandler.js";
 import SignupPage from "./SignupPage.js";
+import ForgotPassword from "./ForgotPasswordPage.js";
 
 const logo = require("../../data/images/logo.png");
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const [visiblePopup, setVisiblePopup] = useState(false);
+  const [visibleSignup, setVisibleSignup] = useState(false);
+  const [visibleForgot, setVisibleForgot] = useState(false);
   const [loginResponse, setLoginResponse] = useState("");
-  const [signupResponse, setSignupResponse] = useState("");
+  const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+		switch(loginResponse) {
+			case "bademail":
+				setFeedback("Enter a valid email");
+				break;
+			case "fail":
+				setFeedback("The email or password is incorrect");
+				break;
+			case "success":
+				setFeedback("You logged in!");
+		}
+	}, [loginResponse]);
 
   return (
     <View style = {styles.container}>
       <SignupPage
-        visible = {visiblePopup}
-        setVisible = {setVisiblePopup}
-        setSignupResponse = {setSignupResponse}
+        visible = {visibleSignup}
+        setVisible = {setVisibleSignup}
+      />
+      <ForgotPassword 
+        visible = {visibleForgot}
+        setVisible = {setVisibleForgot}
       />
       <Image style = {styles.logo} source = {logo} />
+      <Text style = {styles.feedbackText}>{feedback}</Text>
       <TextInput
         style = {styles.input}
         value = {email}
@@ -38,12 +57,6 @@ export default function LoginPage() {
         placeholderTextColor = "#888"
         secureTextEntry = {true}
       />
-      <Text style = {styles.footerText}>
-        {loginResponse}
-      </Text>
-      <Text style = {styles.footerText}>
-        {signupResponse}
-      </Text>
       {(email && pass) ? 
       <TouchableOpacity
         style = {styles.clickableLogin}
@@ -68,11 +81,11 @@ export default function LoginPage() {
         <View style={styles.dividerLine} />
       </View>
       <View style = {styles.divider}>
-        <Text style = {styles.footerText} onPress = {() => setVisiblePopup(true)}>
+        <Text style = {styles.footerText} onPress = {() => setVisibleSignup(true)}>
           Sign Up
         </Text>
         <View style = {styles.footerDivider} />
-        <Text style = {styles.footerText} onPress = {null}>
+        <Text style = {styles.footerText} onPress = {() => setVisibleForgot(true)}>
           Forgot Password?
         </Text>
       </View>
@@ -92,6 +105,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 200,
     height: 150,
+    alignSelf: "center",
     margin: 40,
     resizeMode: "contain",
   },
@@ -128,6 +142,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
+  feedbackText: {
+		color: 'red',
+		fontWeight: 'bold',
+		textAlign: 'center',
+	},
   divider: {
     flexDirection: 'row',
     alignItems: 'center',

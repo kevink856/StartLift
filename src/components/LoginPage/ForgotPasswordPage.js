@@ -1,28 +1,45 @@
 import { React, useState, useEffect } from "react";
 import { StyleSheet, Modal, Text, View, Pressable, Image, TextInput } from "react-native";
 
-import Signup from "./SignupHandler.js";
+import { ForgotEmail, ForgotPassword } from "./ForgotPasswordHandler.js";
 
 const logo = require("../../data/images/logo.png");
 
-export default function SignupPage(props) {
+export default function FortgotPasswordPage(props) {
 	const [email, setEmail] = useState("");
 	const [pass, setPass] = useState("");
-	const [signupResponse, setSignupResponse] = useState("");
+	const [emailResponse, setEmailResponse] = useState("");
+	const [passwordResponse, setPasswordResponse] = useState("");
 	const [feedback, setFeedback] = useState("");
+	const [showEmail, setShowEmail] = useState(true);
 
 	useEffect(() => {
-		switch(signupResponse) {
+		switch(emailResponse) {
 			case "bademail":
 				setFeedback("Enter a valid email");
 				break;
-			case "exists":
-				setFeedback("This account already exists!");
+			case "fail":
+				setFeedback("This account does not exist");
 				break;
 			case "success":
-				setFeedback("You signed up! Try logging in");
+				setFeedback("Enter a new password");
+				setShowEmail(false);
+				break;
+			default:
+				setFeedback("");
 		}
-	}, [signupResponse]);
+	}, [emailResponse]);
+	useEffect(() => {
+		switch(passwordResponse) {
+			case "success":
+				setFeedback("Password Reset! Try logging in");
+				break;
+			default:
+				setFeedback("");
+		}
+	}, [passwordResponse]);
+
+	// setShowEmail(true);
 
 	return (
 	<Modal
@@ -31,15 +48,18 @@ export default function SignupPage(props) {
 		visible = {props.visible}
 		onRequestClose = {() => {
 			props.setVisible(false);
+			setShowEmail(true);
 			setEmail("");
 			setPass("");
-			setSignupResponse("");
+			setEmailResponse("");
+			setPasswordResponse("");
 			setFeedback("");
 		}}>
 		<View style = {styles.view}>
 		<View style = {styles.viewInside}>
 			<Image style = {styles.logo} source = {logo} />
 			<Text style = {styles.feedbackText}>{feedback}</Text>
+			{(showEmail) ?
 			<TextInput
 				style = {styles.input}
 				value = {email}
@@ -48,6 +68,7 @@ export default function SignupPage(props) {
 				placeholderTextColor = "#888"
 				autoComplete = "email"
 			/>
+			:
 			<TextInput
 				style = {styles.input}
 				value = {pass}
@@ -55,30 +76,51 @@ export default function SignupPage(props) {
 				placeholder = "Password"
 				placeholderTextColor = "#888"
 				secureTextEntry = {true}
-			/>
+			/>}
 			<View style = {styles.buttons}>
 				<Pressable
 					style = {styles.cancelButton}
 					onPress = {() => {
 						props.setVisible(false);
+						setShowEmail(true);
 						setEmail("");
 						setPass("");
-						setSignupResponse("");
+						setEmailResponse("");
+						setPasswordResponse("");
 						setFeedback("");
 					}}>
 					<Text style = {styles.cancelText}>Cancel</Text>
 				</Pressable>
-				{(email && pass) ?
-				<Pressable
-					style = {styles.confirmButtonClickable}
-					onPress = {() => {
-						Signup(email, pass, setSignupResponse);
-					}}>
-					<Text style = {styles.confirmText}>Sign Up</Text>
-				</Pressable>
+				{(showEmail) ?
+				<View>
+					{(email) ?
+					<Pressable
+						style = {styles.confirmButtonClickable}
+						onPress = {() => {
+							ForgotEmail(email, setEmailResponse);
+						}}>
+						<Text style = {styles.confirmText}>Reset</Text>
+					</Pressable>
+					:
+					<View style = {styles.confirmButtonUnclickable}>
+						<Text style = {styles.confirmText}>Reset</Text>
+					</View>}
+				</View>
 				:
-				<View style = {styles.confirmButtonUnclickable}>
-					<Text style = {styles.confirmText}>Sign Up</Text>
+				<View>
+					{(pass) ?
+					<Pressable
+						style = {styles.confirmButtonClickable}
+						onPress = {() => {
+							ForgotPassword(email, pass, setPasswordResponse);
+						}}>
+						<Text style = {styles.confirmText}>Confirm</Text>
+					</Pressable>
+					:
+					<View style = {styles.confirmButtonUnclickable}>
+						<Text style = {styles.confirmText}>Confirm</Text>
+					</View>
+					}
 				</View>}
 			</View>
 		</View>
